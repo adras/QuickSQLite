@@ -83,24 +83,4 @@ namespace NewzIndexerLib.Database
             return result;
         }
     }
-
-    public class ParameterizedCommand : IDisposable
-    {
-        SqliteCommand cmd;
-        Dictionary<string, SqliteParameter> parameters;
-
-        public ParameterizedCommand(SqliteCommand cmd, Dictionary<string, SqliteParameter> parameters)
-        {
-            Cmd = cmd;
-            Parameters = parameters;
-        }
-
-        public SqliteCommand Cmd { get => cmd; set => cmd = value; }
-        public Dictionary<string, SqliteParameter> Parameters { get => parameters; set => parameters = value; }
-
-        public void Dispose()
-        {
-            cmd.Dispose();
-        }
-    }
 }
