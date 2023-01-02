@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace NewzIndexerLib.Database
 {
-    public class SQLiteContext : IDisposable
+    public class QSQLiteConnection : IDisposable
     {
         SqliteConnection connection;
         private bool isDisposed = false;
 
         public SqliteConnection Connection { get => connection; private set => connection = value; }
 
-        public SQLiteContext()
+        public QSQLiteConnection()
         {
-            string connectionString = DbConfiguration.CreateConnectionString();
+            string connectionString = QDbConfiguration.CreateConnectionString();
             Connection = new SqliteConnection(connectionString);
         }
 
@@ -47,7 +47,7 @@ namespace NewzIndexerLib.Database
         }
         #endregion
 
-        ~SQLiteContext()
+        ~QSQLiteConnection()
         {
             Dispose(false);
         }
@@ -57,7 +57,7 @@ namespace NewzIndexerLib.Database
             Connection.Open();
         }
 
-        public ParameterizedCommand CreateInsertCommand(string tableName, SqliteTransaction transaction = null, params string[] columnNames)
+        public QParameterizedCommand CreateInsertCommand(string tableName, SqliteTransaction transaction = null, params string[] columnNames)
         {
             string valueNamePrefix = "@";
 
@@ -79,7 +79,7 @@ namespace NewzIndexerLib.Database
                 command.Parameters.Add(columnParam);
             }
             
-            ParameterizedCommand result = new ParameterizedCommand(command, parameters);
+            QParameterizedCommand result = new QParameterizedCommand(command, parameters);
             return result;
         }
     }

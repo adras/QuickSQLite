@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NewzIndexerLib.Database
 {
-    public class DbConfiguration
+    public class QDbConfiguration
     {
         static string SqLiteFileName { get; set; } = "TheNewzDatabase.sqlite";
 
