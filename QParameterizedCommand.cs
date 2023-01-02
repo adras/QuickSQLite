@@ -7,14 +7,25 @@ namespace NewzIndexerLib.Database
         SqliteCommand cmd;
         Dictionary<string, SqliteParameter> parameters;
 
+        public SqliteCommand Cmd
+        {
+            get => cmd;
+            set => cmd = value;
+        }
+
+        public Dictionary<string, SqliteParameter> Parameters
+        {
+            get => parameters;
+            set => parameters = value;
+        }
+
         public QParameterizedCommand(SqliteCommand cmd, Dictionary<string, SqliteParameter> parameters)
         {
             Cmd = cmd;
             Parameters = parameters;
         }
 
-        public SqliteCommand Cmd { get => cmd; set => cmd = value; }
-        public Dictionary<string, SqliteParameter> Parameters { get => parameters; set => parameters = value; }
+
 
         public void Dispose()
         {

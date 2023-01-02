@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,16 +58,28 @@ namespace NewzIndexerLib.Database
             Connection.Open();
         }
 
+        public async Task<SqliteDataReader> CreateSelectCommand(string tableName, params string[] columnNames)
+        {
+            string columnSql = string.Join(",", columnNames);
+
+            string commandText = $"SELECT {columnSql} FROM {tableName}";
+            
+            SqliteCommand command = new SqliteCommand(commandText, connection);
+            SqliteDataReader result = await command.ExecuteReaderAsync();
+
+            return result;
+        }
+
         public QParameterizedCommand CreateInsertCommand(string tableName, SqliteTransaction transaction = null, params string[] columnNames)
         {
             string valueNamePrefix = "@";
 
-            string columns = string.Join(",", columnNames);
+            string columnSql = string.Join(",", columnNames);
             
             // Same as columns, but also prefix each value with the prefix like: @ArticleId
             string values = string.Join(",", columnNames.Select(name => $"{valueNamePrefix}{name}"));
             
-            string commandText = $"INSERT INTO {tableName} ({columns}) VALUES({values})";
+            string commandText = $"INSERT INTO {tableName} ({columnSql}) VALUES({values})";
 
             SqliteCommand command = new SqliteCommand(commandText, connection, transaction);
 
