@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace QuickSQLite
 {
-    public class QSQLiteReader
+    public class QSQLiteReader 
     {
-        internal QSQLiteReader()
-        {
-
         }
     }
 
