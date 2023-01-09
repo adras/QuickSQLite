@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QuickSQLite.Tables
 {
-	public class TableDeleter
+	public class QTableDeleter
     {
         public static void DropTable<T>(QSQLiteConnection connection, bool includeIfExists = false)
         {

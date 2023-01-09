@@ -9,7 +9,7 @@ using Microsoft.Data.Sqlite;
 
 namespace QuickSQLite.Tables
 {
-	public class TableUpdater
+	public class QTableUpdater
 	{
 		public static void UpdateTable<T>(QSQLiteConnection connection)
 		{

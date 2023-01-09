@@ -14,7 +14,7 @@ namespace TestApp
 			QSQLiteConnection connection = new QSQLiteConnection();
 			connection.Open();
 
-			QTableManager.CreateTable<Person>(connection, true);
+			QTableManager.CreateTable<Customer>(connection, true);
 
 			QTableManager.DeleteTableData<Person>(connection);
 

@@ -9,8 +9,8 @@ using QuickSQLite.Typing;
 
 namespace QuickSQLite.Tables
 {
-	internal class TableCreater
-    {
+	internal class QTableCreater
+	{
 		public static void CreateTable<T>(QSQLiteConnection connection, bool includeIfNotExists = false)
 		{
 			string sql = CreateTableSql<T>(includeIfNotExists);
@@ -41,7 +41,7 @@ namespace QuickSQLite.Tables
 				{
 					dataType += " NOT NULL";
 				}
-				
+
 				columnDefinitions += $"{property.Name} {dataType}, ";
 			}
 

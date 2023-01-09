@@ -19,6 +19,10 @@ namespace QuickSQLite.Typing
 		/// <remarks>ALL HAIL TO CHATGPT</remarks>
 		public static string GetSQLiteDataType(this Type type)
 		{
+			if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+			{
+				type = Nullable.GetUnderlyingType(type);
+			}
 			if (type == typeof(int) || type == typeof(long))
 			{
 				return "INTEGER";
