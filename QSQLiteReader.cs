@@ -10,7 +10,7 @@ namespace QuickSQLite
 {
     public class QSQLiteReader 
     {
-        }
+        
     }
 
     public class QSQLiteReaderFactory
