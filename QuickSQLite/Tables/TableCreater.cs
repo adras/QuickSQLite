@@ -15,7 +15,7 @@ namespace QuickSQLite.Tables
 		public static void CreateTable<T>(QSQLiteConnection connection, bool includeIfNotExists = false)
 		{
 			string sql = CreateTableSql<T>();
-			SqliteCommand cmd = connection.Connection.CreateCommand();
+			using SqliteCommand cmd = connection.Connection.CreateCommand();
 			cmd.CommandText = sql;
 			cmd.ExecuteNonQuery();
 		}
