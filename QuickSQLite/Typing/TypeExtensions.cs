@@ -42,5 +42,17 @@ namespace QuickSQLite.Typing
 				throw new ArgumentException($"The type '{type.Name}' is not supported. Only the following types are supported: int, long, float, double, decimal, string, bool, byte[].");
 			}
 		}
+
+		/// <summary>
+		/// Determines whether the specified type is nullable.
+		/// </summary>
+		/// <param name="type">The type to check.</param>
+		/// <returns>True if the type is nullable, false otherwise.</returns>
+		public static bool IsNullableType(this Type type)
+		{
+			if (!type.IsValueType) return true; // ref-type
+			if (Nullable.GetUnderlyingType(type) != null) return true; // Nullable<T>
+			return false; // value-type
+		}
 	}
 }

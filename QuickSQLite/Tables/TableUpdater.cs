@@ -22,6 +22,12 @@ namespace QuickSQLite.Tables
 			cmd.ExecuteNonQuery();
 		}
 
+		/// <summary>
+		/// Only supports adding new columns. Changing the type or removing columns is not yet supported
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="connection"></param>
+		/// <returns></returns>
 		private static string AlterTableSql<T>(QSQLiteConnection connection)
 		{
 			Type type = typeof(T);

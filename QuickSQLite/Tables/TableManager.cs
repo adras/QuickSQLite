@@ -19,5 +19,16 @@ namespace QuickSQLite.Tables
         {
             TableUpdater.UpdateTable<T>(connection);
         }
-    }
+
+        public static void DropTable<T>(QSQLiteConnection connection, bool includeIfExists = false) where T : class
+        {
+            TableDeleter.DropTable<T>(connection, includeIfExists);
+        }
+
+		public static void DeleteTableData<T>(QSQLiteConnection connection) where T : class
+		{
+			TableDeleter.DeleteTableData<T>(connection);
+		}
+
+	}
 }

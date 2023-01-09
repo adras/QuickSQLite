@@ -16,7 +16,11 @@ namespace TestApp
 
 			TableManager.CreateTable<Person>(connection, true);
 
-			//TableManager.UpdateTable<AnotherPerson>(connection)
+			TableManager.DeleteTableData<Person>(connection);
+
+			TableManager.DropTable<Person>(connection);
+			TableManager.DropTable<Person>(connection, true);
+
 		}
 	}
 }

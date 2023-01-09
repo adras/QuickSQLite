@@ -14,7 +14,7 @@ namespace QuickSQLite.Tables
     {
 		public static void CreateTable<T>(QSQLiteConnection connection, bool includeIfNotExists = false)
 		{
-			string sql = CreateTableSql<T>();
+			string sql = CreateTableSql<T>(includeIfNotExists);
 			using SqliteCommand cmd = connection.Connection.CreateCommand();
 			cmd.CommandText = sql;
 			cmd.ExecuteNonQuery();
@@ -33,6 +33,17 @@ namespace QuickSQLite.Tables
 				string dataType = property.PropertyType.GetSQLiteDataType();
 
 				columnDefinitions += $"{property.Name} {dataType}, ";
+
+				// Check if the property type is nullable
+				bool isNullable = property.PropertyType.IsNullableType();
+				if (isNullable)
+				{
+					dataType += " NULL";
+				}
+				else
+				{
+					dataType += " NOT NULL";
+				}
 			}
 
 			// Remove the trailing comma and space
