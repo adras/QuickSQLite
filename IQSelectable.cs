@@ -51,8 +51,10 @@ namespace QuickSQLite
         public T CreateObjectFromCurrentRow(SqliteDataReader reader, SqliteConnection connection)
         {
             PropertyInfo[] x = QSelectableCache.GetPropertiesForType(instance);
+            T result = Activator.CreateInstance<T>();
 
-            return null;
+
+            return result;
         }
     }
 }
