@@ -14,12 +14,12 @@ namespace TestApp
 			QSQLiteConnection connection = new QSQLiteConnection();
 			connection.Open();
 
-			TableManager.CreateTable<Person>(connection, true);
+			QTableManager.CreateTable<Person>(connection, true);
 
-			TableManager.DeleteTableData<Person>(connection);
+			QTableManager.DeleteTableData<Person>(connection);
 
-			TableManager.DropTable<Person>(connection);
-			TableManager.DropTable<Person>(connection, true);
+			QTableManager.DropTable<Person>(connection);
+			QTableManager.DropTable<Person>(connection, true);
 
 		}
 	}
