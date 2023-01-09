@@ -8,7 +8,7 @@ namespace NewzIndexerLib.Database
 {
     public class QDbConfiguration
     {
-        static string SqLiteFileName { get; set; } = "TheNewzDatabase.sqlite";
+        static string SqLiteFileName { get; set; } = "MyDatabase.sqlite";
 
         static string ConnectionStringTemplate { get; set; } = @"Data Source={0}";
 
