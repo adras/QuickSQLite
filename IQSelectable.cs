@@ -52,7 +52,7 @@ namespace QuickSQLite
         {
             PropertyInfo[] x = QSelectableCache.GetPropertiesForType(instance);
             T result = Activator.CreateInstance<T>();
-
+            // TODO: Implement this
 
             return result;
         }

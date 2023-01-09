@@ -53,7 +53,11 @@ namespace NewzIndexerLib.Database
             Dispose(false);
         }
 
-        public void Open()
+		/// <summary>
+		/// Opens a new connection to the SQLite-database using the settings in <see cref="QDbConfiguration"/>
+		/// E.g. the file-name of the sqlite database is configured in <see cref="QDbConfiguration"/>
+		/// </summary>
+		public void Open()
         {
             Connection.Open();
         }

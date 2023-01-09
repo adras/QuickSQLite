@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
+using NewzIndexerLib.Database;
+using QuickSQLite.Typing;
+
+namespace QuickSQLite.Tables
+{
+    internal class TableCreater
+    {
+		public static void CreateTable<T>(QSQLiteConnection connection, bool includeIfNotExists = false)
+		{
+			string sql = CreateTableSql<T>();
+			SqliteCommand cmd = connection.Connection.CreateCommand();
+			cmd.CommandText = sql;
+			cmd.ExecuteNonQuery();
+		}
+
+		private static string CreateTableSql<T>(bool includeIfNotExists = false)
+		{
+			Type type = typeof(T);
+			string tableName = type.Name;
+
+			string columnDefinitions = "";
+			PropertyInfo[] properties = type.GetProperties();
+			foreach (PropertyInfo property in properties)
+			{
+				// Get the data type from the property's type
+				string dataType = property.PropertyType.GetSQLiteDataType();
+
+				columnDefinitions += $"{property.Name} {dataType}, ";
+			}
+
+			// Remove the trailing comma and space
+			columnDefinitions = columnDefinitions.TrimEnd(',', ' ');
+
+			string ifNotExists = (includeIfNotExists) ? "IF NOT EXISTS" : "";
+			return $"CREATE TABLE {ifNotExists} {tableName} ({columnDefinitions})";
+		}
+	}
+}
