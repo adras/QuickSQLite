@@ -1,4 +1,4 @@
-﻿using NewzIndexerLib.Database;
+﻿using QuickSQLite;
 using QuickSQLite.Tables;
 using TestApp.Models;
 

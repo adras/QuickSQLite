@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.Sqlite;
-using NewzIndexerLib.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QuickSQLite.Tables
 {
-    public class TableDeleter
+	public class TableDeleter
     {
         public static void DropTable<T>(QSQLiteConnection connection, bool includeIfExists = false)
         {

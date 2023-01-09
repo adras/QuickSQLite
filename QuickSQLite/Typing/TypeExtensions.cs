@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,14 +46,32 @@ namespace QuickSQLite.Typing
 		}
 
 		/// <summary>
-		/// Determines whether the specified type is nullable.
+		/// Determines whether the specified PropertyInfo is nullable.
 		/// </summary>
-		/// <param name="type">The type to check.</param>
-		/// <returns>True if the type is nullable, false otherwise.</returns>
-		public static bool IsNullableType(this Type type)
+		/// <param name="propertyInfo">The PropertyInfo to check.</param>
+		/// <returns>True if the PropertyInfo is nullable, false otherwise.</returns>
+		public static bool IsNullableType(this PropertyInfo propertyInfo)
 		{
-			if (!type.IsValueType) return true; // ref-type
-			if (Nullable.GetUnderlyingType(type) != null) return true; // Nullable<T>
+			if (!propertyInfo.PropertyType.IsValueType)
+			{
+				// Make an exception for string which are by default always nullable
+				if (propertyInfo.PropertyType == typeof(string))
+				{
+					// Check if a CustomAttribute for the ? exists, and return true
+					if ((bool)(propertyInfo.GetMethod?.CustomAttributes.Any(ca => ca.AttributeType.Name == "NullableContextAttribute")))
+					{
+						return true;
+					}
+					// If string is not explicitely declared as nullable return false
+					return false;
+				}
+
+				return true; // ref-type
+			}
+			if (Nullable.GetUnderlyingType(propertyInfo.PropertyType) != null)
+			{
+				return true; // Nullable<T>
+			}
 			return false; // value-type
 		}
 	}

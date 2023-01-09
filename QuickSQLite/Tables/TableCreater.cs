@@ -5,12 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
-using NewzIndexerLib.Database;
 using QuickSQLite.Typing;
 
 namespace QuickSQLite.Tables
 {
-    internal class TableCreater
+	internal class TableCreater
     {
 		public static void CreateTable<T>(QSQLiteConnection connection, bool includeIfNotExists = false)
 		{
@@ -32,10 +31,8 @@ namespace QuickSQLite.Tables
 				// Get the data type from the property's type
 				string dataType = property.PropertyType.GetSQLiteDataType();
 
-				columnDefinitions += $"{property.Name} {dataType}, ";
-
 				// Check if the property type is nullable
-				bool isNullable = property.PropertyType.IsNullableType();
+				bool isNullable = property.IsNullableType();
 				if (isNullable)
 				{
 					dataType += " NULL";
@@ -44,6 +41,8 @@ namespace QuickSQLite.Tables
 				{
 					dataType += " NOT NULL";
 				}
+				
+				columnDefinitions += $"{property.Name} {dataType}, ";
 			}
 
 			// Remove the trailing comma and space
