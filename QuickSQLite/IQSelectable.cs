@@ -77,7 +77,7 @@ namespace QuickSQLite
 			Type baseType = thisType.BaseType;
 
 			// TODO: Implement next call and foreach loop
-			// IEnumerable<PropertyInfo> x = QReflectionModelCache.GetPropertiesForType<T>();
+			IEnumerable<PropertyInfo> x = QReflectionModelCache.GetPropertiesForType(baseType);
 
 			//foreach (PropertyInfo property in x)
 			//{
@@ -88,6 +88,16 @@ namespace QuickSQLite
 			//	// Then depending on the type of the property, we need to call
 			//	// getstring, get int etc
 
+			/*
+			Type information:
+			
+			reader.GetFieldType(int ordinal)
+			will return the .NET type of the field, while:
+
+			reader.GetDataTypeName(int ordinal)
+			will return a string representing the data type of the field in the data source (e.g. varchar). GetFieldType is likely to be more useful to you given the use case you describe
+
+			*/
 			//	//property.SetValue(this)
 			//}
 
