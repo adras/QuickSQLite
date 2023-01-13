@@ -11,7 +11,7 @@ namespace QuickSQLite.Tables
 {
 	internal class QTableCreater
 	{
-		public static void CreateTable<T>(QSQLiteConnection connection, bool includeIfNotExists = false)
+		public static void CreateTable<T>(QSQLiteConnection connection, bool includeIfNotExists = false) where T : IQModel<T>
 		{
 			string sql = CreateTableSql<T>(includeIfNotExists);
 			using SqliteCommand cmd = connection.Connection.CreateCommand();
@@ -19,13 +19,14 @@ namespace QuickSQLite.Tables
 			cmd.ExecuteNonQuery();
 		}
 
-		private static string CreateTableSql<T>(bool includeIfNotExists = false)
+		private static string CreateTableSql<T>(bool includeIfNotExists = false) where T : IQModelCached
 		{
 			Type type = typeof(T);
 			string tableName = type.Name;
 
 			string columnDefinitions = "";
-			PropertyInfo[] properties = type.GetProperties();
+			IEnumerable<PropertyInfo> properties = QReflectionModelCache.GetPropertiesForType<T>();
+			
 			foreach (PropertyInfo property in properties)
 			{
 				// Get the data type from the property's type

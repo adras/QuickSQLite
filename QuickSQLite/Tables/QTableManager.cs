@@ -9,7 +9,7 @@ namespace QuickSQLite.Tables
 {
 	public class QTableManager
     {
-        public static void CreateTable<T>(QSQLiteConnection connection, bool includeIfNotExists) where T : class
+        public static void CreateTable<T>(QSQLiteConnection connection, bool includeIfNotExists) where T : IQModel<T>
         {
             QTableCreater.CreateTable<T>(connection, includeIfNotExists);
         }

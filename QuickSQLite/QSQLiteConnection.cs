@@ -12,6 +12,7 @@ namespace QuickSQLite
 	{
 		SqliteConnection connection;
 		private bool isDisposed = false;
+		private QueryBuilder queryBuilder;
 
 		public SqliteConnection Connection { get => connection; private set => connection = value; }
 
@@ -19,6 +20,7 @@ namespace QuickSQLite
 		{
 			string connectionString = QDbConfiguration.CreateConnectionString();
 			Connection = new SqliteConnection(connectionString);
+			queryBuilder = new QueryBuilder(connection);
 		}
 
 		#region IDisposable
@@ -62,6 +64,24 @@ namespace QuickSQLite
 			Connection.Open();
 		}
 
+		public void InsertObjects<T>(IEnumerable<T> objects) where T : IQModel<T>
+		{
+			using SqliteTransaction transaction = connection.BeginTransaction();
+
+			foreach (T obj in objects)
+			{
+				string sql = queryBuilder.CreateRecord(obj.QName, obj.CreateValueDictionary());
+				SqliteCommand command = connection.CreateCommand();
+				command.CommandText = sql;
+				command.ExecuteNonQuery();
+			}
+
+			transaction.Commit();
+		}
+
+
+		#region OldStuff
+
 		public async Task<SqliteDataReader> CreateSelectCommand(string tableName, params string[] columnNames)
 		{
 			string columnSql = string.Join(",", columnNames);
@@ -99,5 +119,13 @@ namespace QuickSQLite
 			QParameterizedCommand result = new QParameterizedCommand(command, parameters);
 			return result;
 		}
+
+		public IEnumerable<T> QueryAll<T>() where T: IQModel<T>
+		{
+			queryBuilder.ReadRecords<T>();
+			return null;
+			//queryBuilder.ReadRecords()
+		}
+		#endregion
 	}
 }

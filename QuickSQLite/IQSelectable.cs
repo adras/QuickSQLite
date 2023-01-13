@@ -8,53 +8,104 @@ using System.Threading.Tasks;
 
 namespace QuickSQLite
 {
-    public interface IQSelectableCached
-    { }
+	public interface IQModelCached
+	{ }
 
-    public interface IQSelectable<T> : IQSelectableCached
-    {
-        public T CreateObjectFromCurrentRow(SqliteDataReader reader, SqliteConnection connection);
-    }
+	public interface IQModel<T> : IQModelCached
+	{
+		public void CreateObjectFromCurrentRow<T>(SqliteDataReader reader);
 
-    internal class QSelectableCache
-    {
-        private static readonly Dictionary<IQSelectableCached, PropertyInfo[]> propertyCache = new Dictionary<IQSelectableCached, PropertyInfo[]>();
+		public Dictionary<string, object> CreateValueDictionary();
 
-        internal static PropertyInfo[] GetPropertiesForType<T>(T item) where T : IQSelectableCached
-        {
-            if (!propertyCache.ContainsKey(item))
-            {
-                PropertyInfo[] properties = GetProperties(item);
-                propertyCache[item] = properties;
-            }
-            return propertyCache[item];
-        }
+		public string QName { get; }
+	}
 
-        private static PropertyInfo[] GetProperties<T>(T item) 
-        {
-            // TODO: Add an attribute to allow the user to ignore properties
-            Type itemType = item.GetType();
-            PropertyInfo[] props = itemType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            return props;
-        }
-    }
+	internal class QReflectionModelCache
+	{
+		private static readonly Dictionary<Type, IEnumerable<PropertyInfo>> propertyCache = new Dictionary<Type, IEnumerable<PropertyInfo>>();
 
-    public class QSelectable<T> : IQSelectable<T> where T : IQSelectableCached
-    {
-        private T instance;
+		internal static IEnumerable<PropertyInfo> GetPropertiesForType(Type type)
+		{
+			if (!propertyCache.ContainsKey(type))
+			{
+				IEnumerable<PropertyInfo> properties = GetProperties(type);
+				propertyCache[type] = properties;
+			}
+			return propertyCache[type];
+		}
 
-        public QSelectable(T instance)
-        {
-            this.instance = instance;   
-        }
+		internal static IEnumerable<PropertyInfo> GetPropertiesForType<T>() where T : IQModelCached
+		{
+			Type type = typeof(T);
+			IEnumerable<PropertyInfo> result = GetPropertiesForType(type);
 
-        public T CreateObjectFromCurrentRow(SqliteDataReader reader, SqliteConnection connection)
-        {
-            PropertyInfo[] x = QSelectableCache.GetPropertiesForType(instance);
-            T result = Activator.CreateInstance<T>();
-            // TODO: Implement this
+			return result;
+		}
 
-            return result;
-        }
-    }
+		private static IEnumerable<PropertyInfo> GetProperties(Type itemType)
+		{
+			// TODO: Add an attribute to allow the user to ignore properties
+			IEnumerable<PropertyInfo> properties = itemType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+			// Ignore QName since it's an internal feature. The QName is not supposed to exist
+			// as a column in the database. Therefore this property should not be included
+			// in any queries which are generated.
+			IEnumerable<PropertyInfo> result = properties.Where(p => p.Name != "QName");
+
+			return result;
+		}
+	}
+
+	public class QReflectionModel<T> : IQModel<T> where T : IQModelCached
+	{
+		public QReflectionModel()
+		{
+		}
+
+		public string QName
+		{
+			get
+			{
+				string name = typeof(T).Name;
+				return name;
+			}
+		}
+
+		public void CreateObjectFromCurrentRow<T>(SqliteDataReader reader)
+		{
+			Type thisType = GetType();
+			Type baseType = thisType.BaseType;
+
+			// TODO: Implement next call and foreach loop
+			// IEnumerable<PropertyInfo> x = QReflectionModelCache.GetPropertiesForType<T>();
+
+			//foreach (PropertyInfo property in x)
+			//{
+			//	// Now things are getting a bit tricky.
+			//	// Reader allows only to get a column by number, not by name,
+			//	// so we need a cache which allows to look up the number by a property name
+
+			//	// Then depending on the type of the property, we need to call
+			//	// getstring, get int etc
+
+			//	//property.SetValue(this)
+			//}
+
+			return;
+		}
+
+		public Dictionary<string, object> CreateValueDictionary()
+		{
+			IEnumerable<PropertyInfo> properties = QReflectionModelCache.GetPropertiesForType<T>();
+			Dictionary<string, object> values = new Dictionary<string, object>();
+
+			foreach (PropertyInfo p in properties)
+			{
+				string name = p.Name;
+				object value = p.GetValue(this);
+				values.Add(name, value);
+			}
+			return values;
+		}
+	}
 }
